@@ -5,6 +5,8 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdint.h>
+#include <stdlib.h>
+#include <string.h>
 
 #define MAXFILESINGRP	4096
 
@@ -25,3 +27,5 @@ bool isKenSilvermanHeader(char* kenSilverman);
 
 // createKenSilvermanHeader(): Create a Ken Silverman header inside a file.  Returns failure(0) on success or true(0) on failure.
 bool createKenSilvermanHeader(FILE* grpFile, struct grpFileStructure* grpData, uint32_t numberOfFiles);
+
+// fileSize(): Function to return size of a file in bytes.
