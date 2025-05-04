@@ -12,10 +12,7 @@ int main(int argc, char *argv[])
 		printf("-o may be omitted.  Default filename is untitled.grp\n");
 		exit(EXIT_FAILURE);
 	}
-
-	//strcpy(grpFileData[0].fileName, "hello.txt");
-	//grpFileData[0].fileSize = 6;
-
+		
 	char grpFileName[13] = "untitled.grp";
 	int grpFileQuantity = 0;
 
@@ -69,9 +66,21 @@ int main(int argc, char *argv[])
 	printf("Grouping %d file(s)...\n", grpFileQuantity);
 
 	struct grpFileStructure grpFileData[grpFileQuantity];
-
 	//FILE* grpFile = fopen(grpFileName, "wb");
+	//grpFileData[0].fileSize = 6;
 
+	// Add information to grpFileStructure grpFileData
+	for (int intCounter = 0; intCounter < grpFileQuantity; intCounter++)
+	{
+		strncpy(grpFileData[intCounter].fileName, argv[intCounter + 1], 13);
+		
+		// do file size?
+
+		// we dont need these yet
+		grpFileData[intCounter].offset = 0;
+		grpFileData[intCounter].next = NULL;
+	}
+		
 	/*if (createKenSilvermanHeader(grpFile, grpFileData, 1) == 1)
 		fprintf(stderr, "Failure!\n");*/
 
