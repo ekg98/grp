@@ -66,25 +66,45 @@ int main(int argc, char *argv[])
 	printf("Grouping %d file(s)...\n", grpFileQuantity);
 
 	struct grpFileStructure grpFileData[grpFileQuantity];
-	//FILE* grpFile = fopen(grpFileName, "wb");
-	//grpFileData[0].fileSize = 6;
+	
 
 	// Add information to grpFileStructure grpFileData
 	for (int intCounter = 0; intCounter < grpFileQuantity; intCounter++)
 	{
+		struct stat buffer;
+		
 		strncpy(grpFileData[intCounter].fileName, argv[intCounter + 1], 13);
 		
 		// do file size?
+		if ((grpFileData[intCounter].fd = open(grpFileData[intCounter].fileName, O_RDONLY)) == -1)
+			fprintf(stderr, "File %s not found...\n", grpFileData[intCounter].fileName);
+
+		if (fstat(grpFileData[intCounter].fd, &buffer) == -1)
+			fprintf(stderr, "Error obtaining file data.\n");
+
+		grpFileData[intCounter].fileSize = buffer.st_size;
+
+		printf("%s %d\n", grpFileData[intCounter].fileName, grpFileData[intCounter].fileSize);
 
 		// we dont need these yet
 		grpFileData[intCounter].offset = 0;
 		grpFileData[intCounter].next = NULL;
+
+		
 	}
 		
-	/*if (createKenSilvermanHeader(grpFile, grpFileData, 1) == 1)
-		fprintf(stderr, "Failure!\n");*/
+	FILE* grpFile = fopen(grpFileName, "wb");
 
-	//fclose(grpFile);
+	if (createKenSilvermanHeader(grpFile, grpFileData, grpFileQuantity) == 1)
+		fprintf(stderr, "Failure!\n");
+
+	for (int intCounter = 0; intCounter < grpFileQuantity; intCounter++)
+	{
+		if (grpFileData[intCounter].fd != -1)
+			close(grpFileData[intCounter].fd);
+	}
+
+	fclose(grpFile);
 		
 	return EXIT_SUCCESS;
 }

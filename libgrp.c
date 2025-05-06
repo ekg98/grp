@@ -40,11 +40,11 @@ bool createKenSilvermanHeader(FILE *grpFile, struct grpFileStructure *grpData, u
 	for (int intCounter = 0; intCounter < numberOfFiles; intCounter++)
 	{
 		// Write file name.
-		if (fwrite(grpData->fileName, sizeof(char), 12, grpFile) != 12)
+		if (fwrite(grpData[intCounter].fileName, sizeof(char), 12, grpFile) != 12)
 			return true;
 
 		// Write file Size.
-		if (fwrite(&grpData->fileSize, sizeof(uint32_t), 1, grpFile) != 1)
+		if (fwrite(&grpData[intCounter].fileSize, sizeof(uint32_t), 1, grpFile) != 1)
 			return true;
 	};
 

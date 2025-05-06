@@ -7,12 +7,16 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <unistd.h>
 
 #define MAXFILESINGRP	4096
 
 // grpFileStructure:  Structure containing information about the file located inside a .grp file.
 struct grpFileStructure
 {
+	int fd;
 	char fileName[13];
 	uint32_t fileSize;
 	long offset;
