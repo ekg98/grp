@@ -98,6 +98,19 @@ int main(int argc, char *argv[])
 	if (createKenSilvermanHeader(grpFile, grpFileData, grpFileQuantity) == 1)
 		fprintf(stderr, "Failure!\n");
 
+	// transfer data.
+	for (int intCounter = 0; intCounter < grpFileQuantity; intCounter++)
+	{
+		uint8_t byteBuf;
+		
+		for (long byteCounter = 0; byteCounter < grpFileData[intCounter].fileSize; byteCounter++)
+		{
+			read(grpFileData[intCounter].fd, &byteBuf, 1);
+			fwrite(&byteBuf, 1, 1, grpFile);
+		}
+	}
+
+	// close the files that were opened for reading.
 	for (int intCounter = 0; intCounter < grpFileQuantity; intCounter++)
 	{
 		if (grpFileData[intCounter].fd != -1)
