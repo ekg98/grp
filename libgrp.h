@@ -30,6 +30,6 @@ struct grpFileStructure
 bool isKenSilvermanHeader(char* kenSilverman);
 
 // createKenSilvermanHeader(): Create a Ken Silverman header inside a file.  Returns failure(0) on success or true(0) on failure.
-bool createKenSilvermanHeader(FILE* grpFile, struct grpFileStructure* grpData, uint32_t numberOfFiles);
+bool createKenSilvermanHeader(int fd, struct grpFileStructure* grpData, uint32_t numberOfFiles);
 
 // fileSize(): Function to return size of a file in bytes.

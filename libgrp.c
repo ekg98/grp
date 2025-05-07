@@ -16,7 +16,7 @@ bool isKenSilvermanHeader(char *kenSilverman)
 }
 
 // createKenSilvermanHeader(): Create a Ken Silverman header inside a file.  Returns true on failure(1) or false on success(0).
-bool createKenSilvermanHeader(FILE *grpFile, struct grpFileStructure *grpData, uint32_t numberOfFiles)
+bool createKenSilvermanHeader(int fd, struct grpFileStructure *grpData, uint32_t numberOfFiles)
 {
 	char *header = "KenSilverman";
 
@@ -27,24 +27,24 @@ bool createKenSilvermanHeader(FILE *grpFile, struct grpFileStructure *grpData, u
 		return true;
 	}
 
-	rewind(grpFile);
+	//rewind(grpFile);
 
 	// Write KenSilverman.
-	if (fwrite(header, sizeof(char), 12, grpFile) != 12)
+	if (write(fd, header, 12) != 12)
 		return true;
 	
 	// Write file quantity.
-	if (fwrite(&numberOfFiles, sizeof(uint32_t), 1, grpFile) != 1)
+	if (write(fd, &numberOfFiles, 4) != 4)
 		return true;
 
 	for (int intCounter = 0; intCounter < numberOfFiles; intCounter++)
 	{
 		// Write file name.
-		if (fwrite(grpData[intCounter].fileName, sizeof(char), 12, grpFile) != 12)
+		if (write(fd, grpData[intCounter].fileName, 12) != 12)
 			return true;
 
 		// Write file Size.
-		if (fwrite(&grpData[intCounter].fileSize, sizeof(uint32_t), 1, grpFile) != 1)
+		if (write(fd, &grpData[intCounter].fileSize, 4) != 4)
 			return true;
 	};
 

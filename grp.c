@@ -92,8 +92,9 @@ int main(int argc, char *argv[])
 
 		
 	}
-		
-	FILE* grpFile = fopen(grpFileName, "wb");
+	
+	// open the new group file
+	int grpFile = open(grpFileName, O_RDWR | O_CREAT, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
 
 	if (createKenSilvermanHeader(grpFile, grpFileData, grpFileQuantity) == 1)
 		fprintf(stderr, "Failure!\n");
@@ -106,7 +107,7 @@ int main(int argc, char *argv[])
 		for (long byteCounter = 0; byteCounter < grpFileData[intCounter].fileSize; byteCounter++)
 		{
 			read(grpFileData[intCounter].fd, &byteBuf, 1);
-			fwrite(&byteBuf, 1, 1, grpFile);
+			write(grpFile, &byteBuf, 1);
 		}
 	}
 
@@ -117,7 +118,7 @@ int main(int argc, char *argv[])
 			close(grpFileData[intCounter].fd);
 	}
 
-	fclose(grpFile);
+	close(grpFile);
 		
 	return EXIT_SUCCESS;
 }
