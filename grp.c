@@ -10,7 +10,7 @@ int main(int argc, char *argv[])
 		printf("grp - This program creates .grp files\n");
 		printf("Usage: grp <file> <file> <file> -o output.grp\n");
 		printf("-o may be omitted.  Default filename is untitled.grp\n");
-		exit(EXIT_FAILURE);
+		exit(EXIT_SUCCESS);
 	}
 		
 	char grpFileName[13] = "untitled.grp";
@@ -75,17 +75,22 @@ int main(int argc, char *argv[])
 		
 		strncpy(grpFileData[intCounter].fileName, argv[intCounter + 1], 13);
 		
-		// do file size?
+		// Open each file and add the fd to the structure
 		if ((grpFileData[intCounter].fd = open(grpFileData[intCounter].fileName, O_RDONLY)) == -1)
+		{
 			fprintf(stderr, "File %s not found...\n", grpFileData[intCounter].fileName);
+			exit(EXIT_FAILURE);
+		}
 
+		// find file size and add it to the structure
 		if (fstat(grpFileData[intCounter].fd, &buffer) == -1)
-			fprintf(stderr, "Error obtaining file data.\n");
+		{
+			fprintf(stderr, "Error obtaining file data for %s.\n", grpFileData[intCounter].fileName);
+			exit(EXIT_FAILURE);
+		}
 
 		grpFileData[intCounter].fileSize = buffer.st_size;
-
-		printf("%s %d\n", grpFileData[intCounter].fileName, grpFileData[intCounter].fileSize);
-
+				
 		// we dont need these yet
 		grpFileData[intCounter].offset = 0;
 		grpFileData[intCounter].next = NULL;
@@ -96,19 +101,37 @@ int main(int argc, char *argv[])
 	// open the new group file
 	int grpFile = open(grpFileName, O_RDWR | O_CREAT, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
 
+	if (grpFile == -1)
+	{
+		fprintf(stderr, "Failure creating %s... Exiting...\n", grpFileName);
+		exit(EXIT_FAILURE);
+	}
+
 	if (createKenSilvermanHeader(grpFile, grpFileData, grpFileQuantity) == 1)
-		fprintf(stderr, "Failure!\n");
+	{
+		fprintf(stderr, "Failure writing header table to %s\n", grpFileName);
+		exit(EXIT_FAILURE);
+	}
 
 	// transfer data.
 	for (int intCounter = 0; intCounter < grpFileQuantity; intCounter++)
 	{
 		uint8_t byteBuf;
-		
+		long bytesRead = 0;
+		long bytesWritten = 0;
+
+		printf("%-12s\t%16d bytes", grpFileData[intCounter].fileName, grpFileData[intCounter].fileSize);
+
 		for (long byteCounter = 0; byteCounter < grpFileData[intCounter].fileSize; byteCounter++)
 		{
-			read(grpFileData[intCounter].fd, &byteBuf, 1);
-			write(grpFile, &byteBuf, 1);
+			bytesRead += read(grpFileData[intCounter].fd, &byteBuf, 1);
+			bytesWritten += write(grpFile, &byteBuf, 1);
 		}
+
+		if ((bytesRead == bytesWritten) && (bytesWritten == grpFileData[intCounter].fileSize))
+			printf("\tSUCCESS!\n");
+		else
+			printf("\tFAILED!\n");
 	}
 
 	// close the files that were opened for reading.

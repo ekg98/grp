@@ -27,7 +27,8 @@ bool createKenSilvermanHeader(int fd, struct grpFileStructure *grpData, uint32_t
 		return true;
 	}
 
-	//rewind(grpFile);
+	if (lseek(fd, 0, SEEK_SET) == -1)
+		return true;
 
 	// Write KenSilverman.
 	if (write(fd, header, 12) != 12)
