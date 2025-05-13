@@ -13,6 +13,13 @@
 
 #define MAXFILESINGRP	4096
 
+// enumeration for sort
+enum sortGrp {
+	NONE,
+	ASCENDING,
+	DECENDING
+};
+
 // grpFileStructure:  Structure containing information about the file located inside a .grp file.
 struct grpFileStructure
 {
@@ -31,3 +38,6 @@ bool isKenSilvermanHeader(char* kenSilverman);
 
 // createKenSilvermanHeader(): Create a Ken Silverman header inside a file.  Returns failure(0) on success or true(0) on failure.
 bool createKenSilvermanHeader(int fd, struct grpFileStructure* grpData, uint32_t numberOfFiles);
+
+// sortGrpFileStructure(): Sorts the list of files deposited inside the .grp file depending on selection of enum sort.
+bool sortGrpFileStructure(struct grpFileStructure* grpData, enum sortGrp attribute);

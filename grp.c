@@ -5,6 +5,12 @@
 
 int main(int argc, char *argv[])
 {
+	char grpFileName[13] = "untitled.grp";
+	int grpFileQuantity = 0;
+	
+	// default sort type is NONE.  No sorting performed.
+	enum sortGrp grpSortType = NONE;
+
 	if (argc < 2)
 	{
 		printf("grp - This program creates .grp files\n");
@@ -13,9 +19,6 @@ int main(int argc, char *argv[])
 		exit(EXIT_SUCCESS);
 	}
 		
-	char grpFileName[13] = "untitled.grp";
-	int grpFileQuantity = 0;
-
 	// look for a argument switch string and set the options to process the .grp file
 	for (int intArgCounter = 0; intArgCounter < argc; intArgCounter++)
 	{
@@ -49,6 +52,24 @@ int main(int argc, char *argv[])
 					printf("Your seeking some help...  None Found yet!\n");
 					exit(EXIT_SUCCESS);
 					break;
+				case 'a':
+					grpSortType = ASCENDING;
+
+					if (strcmp(grpFileName, "untitled.grp") == 0)
+						grpFileQuantity = argc - 2;
+					else
+						grpFileQuantity = argc - 3;
+
+					break;
+				case 'd':
+					grpSortType = DECENDING;
+
+					if (strcmp(grpFileName, "untitled.grp") == 0)
+						grpFileQuantity = argc - 2;
+					else
+						grpFileQuantity = argc - 3;
+
+					break;
 				case '\0':
 					// ignore the newline char
 					break;
@@ -63,10 +84,27 @@ int main(int argc, char *argv[])
 	}
 
 	printf("Using output file name %s\n", grpFileName);
-	printf("Grouping %d file(s)...\n", grpFileQuantity);
+	printf("Grouping %d file(s) in ", grpFileQuantity);
+
+	// print sorting message
+	switch (grpSortType)
+	{
+	case NONE:
+		printf("no order...\n");
+		break;
+	case ASCENDING:
+		printf("ascending order...\n");
+		break;
+	case DECENDING:
+		printf("decending order...\n");
+		break;
+	default:
+		exit(EXIT_FAILURE);
+		break;
+	}
 
 	struct grpFileStructure grpFileData[grpFileQuantity];
-	
+	grpFileData[grpFileQuantity - 1].next = NULL;
 
 	// Add information to grpFileStructure grpFileData
 	for (int intCounter = 0; intCounter < grpFileQuantity; intCounter++)
@@ -93,11 +131,16 @@ int main(int argc, char *argv[])
 				
 		// we dont need these yet
 		grpFileData[intCounter].offset = 0;
-		grpFileData[intCounter].next = NULL;
-
-		
+				
 	}
 	
+	//sort the grp
+	if (sortGrpFileStructure(grpFileData, grpSortType) == 1)
+	{
+		fprintf(stderr, "Sorting file names failed. Exiting...\n");
+		exit(EXIT_FAILURE);
+	}
+		
 	// open the new group file
 	int grpFile = open(grpFileName, O_RDWR | O_CREAT, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
 

@@ -51,3 +51,21 @@ bool createKenSilvermanHeader(int fd, struct grpFileStructure *grpData, uint32_t
 
 	return false;
 }
+
+// sortGrpFileStructure(): Sorts the list of files deposited inside the .grp file depending on selection of enum sort.
+bool sortGrpFileStructure(struct grpFileStructure* grpData, enum sortGrp attribute)
+{
+	switch(attribute)
+	{
+		case NONE:
+			break;
+		case ASCENDING:
+			break;
+		case DECENDING:
+			break;
+		default:
+			break;
+	}
+
+	return 0;
+}
