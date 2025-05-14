@@ -103,9 +103,22 @@ int main(int argc, char *argv[])
 		break;
 	}
 
-	struct grpFileStructure grpFileData[grpFileQuantity];
-	grpFileData[grpFileQuantity - 1].next = NULL;
 
+	// Initialize grpFileStructure to store file data.  If 0 files will be stored allocate atleast 1 itteration of the structure so the next pointer will be stored properly.
+	// This is probably some kind of error above for not declaring grpFileQuantity right some way.  Might need future adjustment but I believe works for now.
+	// This could be fixed by detecting no files as input but its neat to beable to create a empty grp?  If grpFileQuantity is 0 most of the functions following will not run.
+	// Hence this creates a empty grp.
+	int structureSize;
+	
+	if (grpFileQuantity == 0)
+		structureSize = 1;
+	else
+		structureSize = grpFileQuantity;
+
+
+	struct grpFileStructure grpFileData[structureSize];
+	grpFileData[structureSize - 1].next = NULL;
+	
 	// Add information to grpFileStructure grpFileData
 	for (int intCounter = 0; intCounter < grpFileQuantity; intCounter++)
 	{
